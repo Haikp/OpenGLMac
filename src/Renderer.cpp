@@ -22,7 +22,8 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
     shader.Bind();
     va.Bind();
     //specify that with the given info, we will be drawing triangles
-    GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+    // GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+    GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 }
 
 void Renderer::Clear() const

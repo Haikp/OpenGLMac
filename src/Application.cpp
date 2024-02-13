@@ -1,5 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+// #include <assimp/Importer.hpp>
+// #include <assimp/scene.h>
+// #include <assimp/postprocess.h>
 
 #include <iostream>
 #include <fstream>
@@ -12,19 +15,11 @@
 #include "VertexArray.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Camera.h"
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
-
-struct Vertex {
-    glm::vec2 position;
-    glm::vec2 texcoord;
-    // glm::vec3 color;
-};
-
-//must always be divisible by a certain number depending on context
-//in this case for quads, size must be divisible by 4
-int const SIZE = 4;
+#include "vendor/glm/gtc/type_ptr.hpp"
 
 int main()
 {
@@ -65,47 +60,24 @@ int main()
 
     {
         
-        Vertex positions[SIZE];
-
-        for (int i = 0; i < SIZE/4;)
-        {
-            positions[i].position = glm::vec2(0.5f, 0.5f);
-            positions[i].texcoord = glm::vec2(1.0f, 1.0f);
-            i++;
-
-            positions[i].position = glm::vec2(-0.5f, 0.5f);
-            positions[i].texcoord = glm::vec2(0.0f, 1.0f);
-            i++;
-
-            positions[i].position = glm::vec2(-0.5f, -0.5f);
-            positions[i].texcoord = glm::vec2(0.0f, 0.0f);
-            i++;
-
-            positions[i].position = glm::vec2(0.5f, -0.5f);
-            positions[i].texcoord = glm::vec2(1.0f, 0.0f);
-            i++;
-        }
-
         
-        // float positions[] =
-        // {
-        //     // VERTICIES  //TEXCOORDS
+        float positions[] =
+        { 
+            -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+        	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+        	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+        	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+        	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
+        };
 
-        //      0.5f,  0.5f,  1.0f,  1.0f, // 0
-        //     -0.5f,  0.5f,  0.0f,  1.0f, // 1
-        //     -0.5f, -0.5f,  0.0f,  0.0f, // 2
-        //      0.5f, -0.5f,  1.0f,  0.0f, // 3
-
-        //     //  1.0f,  1.0f,  1.0f,  1.0f, // 0
-        //     // -1.0f,  1.0f,  0.0f,  1.0f, // 1
-        //     // -1.0f, -1.0f,  0.0f,  0.0f, // 2
-        //     //  1.0f, -1.0f,  1.0f,  0.0f, // 3
-        // };
-
-        unsigned int indicies[6] =
+        unsigned int indicies[18] =
         {
-            0, 1, 2,
-            0, 2, 3,
+	        0, 1, 2,
+	        0, 2, 3,
+	        0, 1, 4,
+	        1, 2, 4,
+	        2, 3, 4,
+	        3, 0, 4
         };
 
         GLCall(glEnable(GL_BLEND));
@@ -114,38 +86,60 @@ int main()
         VertexArray va;
         va.Bind();
 
-        // VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-        VertexBuffer vb(sizeof(Vertex) * SIZE);
+        VertexBuffer vb(positions, 5 * 8 * sizeof(float));
         vb.Bind();
-        IndexBuffer ib(indicies, 6);
+        IndexBuffer ib(indicies, 18);
         ib.Bind();
 
         VertexBufferLayout layout; 
-        layout.Push<float>(2);
+        layout.Push<float>(3);
+        layout.Push<float>(3);
         layout.Push<float>(2);
 
         va.AddBuffer(vb, layout);
 
-        Shader shader("../res/shaders/WindowTest.shader");
+        Shader shader("../res/shaders/Basic.shader");
         shader.Bind();
-        shader.SetUniform2f("u_ScreenSize", frameBufferWidth, frameBufferHeight);
 
         Renderer renderer;
 
-        Texture texture("../res/textures/PogO.png");
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0);
+        // Texture texture("../res/textures/PogO.png");
+        // texture.Bind();
+        // shader.SetUniform1i("u_Texture", 0);
 
         va.Unbind();
         vb.Unbind();
         ib.Unbind();
         shader.Unbind();
 
+        glEnable(GL_DEPTH_TEST);
+
+        // Variables that help the rotation of the pyramid
+	    float rotation = 0.0f;
+	    double prevTime = glfwGetTime();
+
+        Camera camera(frameBufferWidth, frameBufferHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+
         while(!glfwWindowShouldClose(window))
         {
-            renderer.Draw(va, ib, shader);
-            shader.SetUniform2f("u_ScreenSize", width, height);
+            glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
+            double crntTime = glfwGetTime();
+		    if (crntTime - prevTime >= 1 / 60)
+		    {
+			    rotation += 0.5f;
+			    prevTime = crntTime;
+		    }
             
+            shader.Bind();
+            va.Bind();
+
+            camera.Inputs(window);
+            camera.Matrix(45.0f, 0.1f, 100.0f, shader, "camMatrix", rotation);
+
+            renderer.Draw(va, ib, shader);
+
             glfwSwapBuffers(window);
             glfwPollEvents();
         }

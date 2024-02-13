@@ -1,4 +1,7 @@
 #pragma once
+#include <glad/glad.h>
+#include <vector>
+#include "VertexArray.h"
 
 class IndexBuffer
 {
