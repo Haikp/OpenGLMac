@@ -16,6 +16,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"

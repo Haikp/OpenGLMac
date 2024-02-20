@@ -6,7 +6,7 @@ private:
 	unsigned int m_RendererID;
 public:
 	VertexBuffer(const void* data, unsigned int size);
-	// VertexBuffer(std::vector<Vertex>& verticies);
+	// VertexBuffer(std::vector<Vertex>& vertices);
 	VertexBuffer(unsigned int size);
 	~VertexBuffer();
 
