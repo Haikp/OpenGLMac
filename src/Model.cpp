@@ -1,6 +1,7 @@
 #include "Model.h"
 
-unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
+#define STB_IMAGE_IMPLEMENTATION
+#include "vendor/stb_image/stb_image.h"
 
 void Model::Draw(Shader &shader)
 {
@@ -138,7 +139,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     return textures;
 }
 
-unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma)
+unsigned int Model::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
