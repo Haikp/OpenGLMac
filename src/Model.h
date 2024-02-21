@@ -10,7 +10,7 @@
 class Model
 {
     public:
-        Model(char *path, bool gamma = false)
+        Model(const std::string& path, bool gamma = false)
             : gammaCorrection(gamma)
         {
             loadModel(path);

@@ -5,20 +5,8 @@
 #include <fstream>
 #include <sstream>
 
-// #include "Renderer.h"
-// #include "VertexBuffer.h"
-// #include "VertexBufferLayout.h"
-// #include "IndexBuffer.h"
-// #include "VertexArray.h"
-// #include "Texture.h"
-// #include "Shader.h"
 #include "Camera.h"
-// #include "Mesh.h"
 #include "Model.h"
-
-// #include "vendor/glm/glm.hpp"
-// #include "vendor/glm/gtc/matrix_transform.hpp"
-// #include "vendor/glm/gtc/type_ptr.hpp"
 
 int main()
 {
@@ -111,13 +99,15 @@ int main()
         ib.Unbind();
         shader.Unbind();
 
+        Model model("../res/models/grass.dae");
+
         glEnable(GL_DEPTH_TEST);
 
         // Variables that help the rotation of the pyramid
 	    float rotation = 0.0f;
 	    double prevTime = glfwGetTime();
 
-        Camera camera(frameBufferWidth, frameBufferHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+        Camera camera(frameBufferWidth, frameBufferHeight, glm::vec3(0.0f   , 0.0f, 2.0f));
 
         while(!glfwWindowShouldClose(window))
         {
@@ -137,7 +127,8 @@ int main()
             camera.Inputs(window);
             camera.Matrix(45.0f, 0.1f, 100.0f, shader, "camMatrix", rotation);
 
-            renderer.Draw(va, ib, shader);
+            // renderer.Draw(va, ib, shader);
+            model.Draw(shader);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
