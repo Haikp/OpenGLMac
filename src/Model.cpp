@@ -12,17 +12,19 @@ void Model::Draw(Shader &shader)
 
 void Model::loadModel(std::string path)
 {
-    Assimp::Importer import;
-    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    // read file via ASSIMP
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    // check for errors
+    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
-        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
     }
-
+    // retrieve the directory path of the filepath
     directory = path.substr(0, path.find_last_of('/'));
 
+    // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);
 }
 
@@ -93,7 +95,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 
         std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        
+
         std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
@@ -155,6 +157,8 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
             format = GL_RGB;
         else if (nrComponents == 4)
             format = GL_RGBA;
+        else
+            format = GL_RGB8;
 
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

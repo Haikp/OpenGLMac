@@ -1,6 +1,6 @@
 #ifndef MESH_CLASS_H
 #define MESH_CLASS_H
-#include <glm/glm.hpp>
+#include "vendor/glm/glm.hpp"
 #include <vector>
 #include "Shader.h"
 #include "VertexArray.h"

@@ -1,26 +1,24 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-// #include <assimp/Importer.hpp>
-// #include <assimp/scene.h>
-// #include <assimp/postprocess.h>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-#include "Renderer.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "Texture.h"
-#include "Shader.h"
+// #include "Renderer.h"
+// #include "VertexBuffer.h"
+// #include "VertexBufferLayout.h"
+// #include "IndexBuffer.h"
+// #include "VertexArray.h"
+// #include "Texture.h"
+// #include "Shader.h"
 #include "Camera.h"
-#include "Mesh.h"
+// #include "Mesh.h"
+#include "Model.h"
 
-#include "vendor/glm/glm.hpp"
-#include "vendor/glm/gtc/matrix_transform.hpp"
-#include "vendor/glm/gtc/type_ptr.hpp"
+// #include "vendor/glm/glm.hpp"
+// #include "vendor/glm/gtc/matrix_transform.hpp"
+// #include "vendor/glm/gtc/type_ptr.hpp"
 
 int main()
 {

@@ -1,4 +1,4 @@
-#ifndef MODEL_CLASS_H
+#pragma once
 #define MODEL_CLASS_H
 #include "Shader.h"
 #include "Mesh.h"
@@ -31,5 +31,3 @@ class Model
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 };
-
-#endif
